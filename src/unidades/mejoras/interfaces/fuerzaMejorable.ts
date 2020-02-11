@@ -1,0 +1,3 @@
+interface FuerzaMejorableI {
+    mejorarPuntosFuerza: () => void;
+}
