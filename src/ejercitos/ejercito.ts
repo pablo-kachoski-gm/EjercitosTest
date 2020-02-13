@@ -89,10 +89,28 @@ export class Ejercito implements EjercitoI {
 
     agregarMoneda(cantidadMoneda: number) {
         this.cantidadMoneda += cantidadMoneda;
-    } 
+    }
 
     eliminarUnidad(unidadId: number, tipoUnidad: TipoUnidadEjercito) {
+        if (unidadId === undefined || tipoUnidad === undefined) {
+            throw Error("Argumentos Invalidos");
+        }
         this.unidades[tipoUnidad] = this.unidades[tipoUnidad].filter(unidad => unidad.id != unidadId)
     }
 
+    obtenerMejorUnidad() {
+        const unidadesEjercito = [
+            ...this.unidades[TipoUnidadEjercito.PIQUEROS].map(unidad => ({ value: unidad, type: TipoUnidadEjercito.PIQUEROS })),
+            ...this.unidades[TipoUnidadEjercito.ARQUEROS].map(unidad => ({ value: unidad, type: TipoUnidadEjercito.ARQUEROS })),
+            ...this.unidades[TipoUnidadEjercito.CABALLEROS].map(unidad => ({ value: unidad, type: TipoUnidadEjercito.CABALLEROS }))
+        ]
+        let maxValue = 0;
+        let maxUnit: any = null;
+        unidadesEjercito.forEach((unidad) => {
+            const puntosUnidad = unidad.value.getPuntosFuerza();
+            maxValue = puntosUnidad >= maxValue ? puntosUnidad : maxValue;
+            maxUnit = puntosUnidad >= maxValue ? unidad : maxUnit;
+        })
+        return { unidad: maxUnit.value, tipoUnidad: maxUnit.type };
+    }
 }

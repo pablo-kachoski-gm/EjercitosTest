@@ -8,4 +8,5 @@ export interface EjercitoI extends MejoraUnidadesI, TransformaUnidadesI {
     getPuntosTotales: () => number;
     agregarMoneda: (cantidadMoneda: number) => void;
     eliminarUnidad: (unidadId: number, tipoUnidad: TipoUnidadEjercito) => void;
+    obtenerMejorUnidad: () => any;
 }

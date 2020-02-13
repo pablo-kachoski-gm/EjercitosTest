@@ -15,7 +15,7 @@ export class GestorDeBatallas {
         this.ejercitos.push(ejercito)
     }
     enfrentarEjercitos(ejercito1Id: number, ejercito2Id: number) {
-        if (!ejercito1Id || !ejercito2Id) {
+        if (ejercito1Id === undefined || ejercito2Id === undefined) {
             throw Error("Argumentos Invalidos");
         }
 
@@ -39,8 +39,10 @@ export class GestorDeBatallas {
 
         if (totalEj1 > totalEj2) {
             ejercito1.agregarMoneda(100);
+            this.elimininarMejoresUnidades(ejercito2);
         } else {
             ejercito2.agregarMoneda(100);
+            this.elimininarMejoresUnidades(ejercito1);
         }
         return totalEj1 > totalEj2 ? ejercito1 : ejercito2;
 
@@ -61,5 +63,11 @@ export class GestorDeBatallas {
             ejercito.eliminarUnidad(caballeros[0].id, TipoUnidadEjercito.CABALLEROS);
             return;
         }
+    }
+    private elimininarMejoresUnidades(ejercito: EjercitoI) {
+        const mejorUnidad1: any = ejercito.obtenerMejorUnidad();
+        if (mejorUnidad1) ejercito.eliminarUnidad(mejorUnidad1.unidad.id, mejorUnidad1.tipoUnidad);
+        const mejorUnidad2: any = ejercito.obtenerMejorUnidad();
+        if (mejorUnidad2) ejercito.eliminarUnidad(mejorUnidad2.unidad.id, mejorUnidad2.tipoUnidad);
     }
 }

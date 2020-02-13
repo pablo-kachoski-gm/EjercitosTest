@@ -187,7 +187,6 @@ test('Prueba Batalla Ejercito BIZANTINOS vs INGLESES', () => {
 
   expect(gestorBatalla.enfrentarEjercitos(ejercitoBizantino.id, ejercitoIngles.id)).toBe(ejercitoBizantino);
   expect(ejercitoBizantino.cantidadMoneda).toBe(1100);
-
 });
 test('Prueba Batalla Ejercito BIZANTINOS vs INGLESES', () => {
   const ejercitoBizantino = factory.crearEjercito(BIZANTINOS); // 405
@@ -218,4 +217,17 @@ test('Prueba Batalla Ejercito BIZANTINOS vs INGLESES', () => {
   expect(ejercitoBizantino.unidades[PIQUEROS].length).toBe(4);
   expect(ejercitoIngles.unidades[PIQUEROS].length).toBe(9);
 
+});
+test('Prueba Batalla elimina mejores unidades perdedor', () => {
+  const ejercitoBizantino = factory.crearEjercito(BIZANTINOS);
+  const ejercitoIngles = factory.crearEjercito(INGLESES);
+  ejercitoIngles.mejorarUnidad(0, CABALLERO); // 10
+  ejercitoIngles.mejorarUnidad(0, CABALLERO); // 10
+
+  const gestorBatalla = new GestorDeBatallas();
+  gestorBatalla.agregarEjercito(ejercitoBizantino);
+  gestorBatalla.agregarEjercito(ejercitoIngles);
+  gestorBatalla.enfrentarEjercitos(ejercitoBizantino.id, ejercitoIngles.id)
+
+  expect(ejercitoIngles.getPuntosTotales()).toBe(310); // Se eliminan 2 caballeros
 });
