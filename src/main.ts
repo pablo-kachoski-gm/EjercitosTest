@@ -8,6 +8,7 @@ const ejercitoChino = factory.crearEjercito(CHINOS);
 const ejercitoBizantino = factory.crearEjercito(BIZANTINOS);
 const ejercitoIngles = factory.crearEjercito(INGLESES);
 
+
 console.log(ejercitoChino.unidades);
 console.log(ejercitoBizantino.unidades);
 console.log(ejercitoIngles.unidades);

@@ -1,8 +1,8 @@
 import { TipoMejoraDecoratorI } from "./interfaces/tipoMejoraDecorator";
 
 export class MejoraPuntosFuerzaCaballero implements TipoMejoraDecoratorI {
-    static costo: number = 10;
+    static costo: number = 30;
     puntosMejora: number;
     constructor() { };
-    getPuntosMejora() { return 30 };
+    getPuntosMejora() { return 10 };
 }

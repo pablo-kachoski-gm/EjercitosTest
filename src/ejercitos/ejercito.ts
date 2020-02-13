@@ -1,21 +1,21 @@
 import { UnidadesEjercitoI, TipoUnidadEjercito } from "./interfaces/unidadesEjercito";
-import { MejoraUnidadesI } from "./interfaces/mejoraUnidades";
 import { UnidadMejorableI } from "../unidades/UnidadMejorable";
 import { TipoUnidad } from "../unidades/tipoUnidad";
-import { TransformaUnidadesI } from "./interfaces/transformaUnidades";
 import { MejoraPuntosFuerzaPiquero } from "../unidades/mejoras/puntosFuerzaPiquero";
 import { MejoraPuntosFuerzaArquero } from "../unidades/mejoras/puntosFuerzaArquero";
 import { MejoraPuntosFuerzaCaballero } from "../unidades/mejoras/puntosFuerzaCaballero";
 import { Arquero } from "../unidades/arquero";
+import { EjercitoI } from "./interfaces/ejercito";
+import { Caballero } from "../unidades/caballero";
 
 const mapUnidadToEjercito = {
     [TipoUnidad.ARQUERO]: TipoUnidadEjercito.ARQUEROS,
     [TipoUnidad.PIQUERO]: TipoUnidadEjercito.PIQUEROS,
     [TipoUnidad.CABALLERO]: TipoUnidadEjercito.CABALLEROS,
 }
-export class Ejercito implements MejoraUnidadesI, TransformaUnidadesI {
+export class Ejercito implements EjercitoI {
+    id: number;
     cantidadMoneda: number;
-    historialBatallas: Batalla[];
     unidades: UnidadesEjercitoI;
     costoMejoras: {
         [TipoUnidad.PIQUERO]: { mejoraFuerza: number, transformacion: number },
@@ -24,9 +24,13 @@ export class Ejercito implements MejoraUnidadesI, TransformaUnidadesI {
     };
 
     constructor(unidades: UnidadesEjercitoI) {
-        this.unidades = unidades;
+        this.id = Math.floor(Math.random() * (200000 - 0));
+        this.unidades = unidades || {
+            [TipoUnidadEjercito.PIQUEROS]: [],
+            [TipoUnidadEjercito.ARQUEROS]: [],
+            [TipoUnidadEjercito.CABALLEROS]: []
+        };
         this.cantidadMoneda = 1000;
-        this.historialBatallas = [];
         this.costoMejoras = {
             [TipoUnidad.PIQUERO]: { mejoraFuerza: MejoraPuntosFuerzaPiquero.costo, transformacion: 30 },
             [TipoUnidad.ARQUERO]: { mejoraFuerza: MejoraPuntosFuerzaArquero.costo, transformacion: 40 },
@@ -63,10 +67,32 @@ export class Ejercito implements MejoraUnidadesI, TransformaUnidadesI {
                 this.unidades[TipoUnidadEjercito.ARQUEROS].push(new Arquero({ id: newId }));
             } break;
             case TipoUnidad.ARQUERO: {
-                this.unidades[TipoUnidadEjercito.CABALLEROS].push(new Arquero({ id: newId }));
+                this.unidades[TipoUnidadEjercito.CABALLEROS].push(new Caballero({ id: newId }));
             } break;
-            default: {}
+            default: { }
         }
         this.cantidadMoneda = this.cantidadMoneda - this.costoMejoras[tipoUnidad].transformacion;
     }
+
+    getPuntosTotales() {
+        let puntosPiqueros = this.unidades[TipoUnidadEjercito.PIQUEROS]
+            .map(piquero => piquero.getPuntosFuerza())
+            .reduce((acum, puntosFuerza) => acum + puntosFuerza);
+        let puntosArqueros = this.unidades[TipoUnidadEjercito.ARQUEROS]
+            .map(arquero => arquero.getPuntosFuerza())
+            .reduce((acum, puntosFuerza) => acum + puntosFuerza);
+        let puntosCaballeros = this.unidades[TipoUnidadEjercito.CABALLEROS]
+            .map(caballero => caballero.getPuntosFuerza())
+            .reduce((acum, puntosFuerza) => acum + puntosFuerza);
+        return puntosPiqueros + puntosArqueros + puntosCaballeros;
+    }
+
+    agregarMoneda(cantidadMoneda: number) {
+        this.cantidadMoneda += cantidadMoneda;
+    } 
+
+    eliminarUnidad(unidadId: number, tipoUnidad: TipoUnidadEjercito) {
+        this.unidades[tipoUnidad] = this.unidades[tipoUnidad].filter(unidad => unidad.id != unidadId)
+    }
+
 }
